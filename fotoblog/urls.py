@@ -15,13 +15,46 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 
 import authentification.views
 import blog.views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', authentification.views.login_page, name="login"),
-    path('logout/', authentification.views.logout_user, name='logout'),
+
+    # Url via vue générique
+    path('', LoginView.as_view(
+            template_name='authentification/login.html',
+            redirect_authenticated_user=True),
+            name='login'),
+
+    # Url via vue basée sur une Classe
+    # path('', authentification.views.LoginPageView.as_view(), name='login'),
+
+    # Url via vue basée sur une Fonction
+    # path('', authentification.views.login_page, name="login"),
+
+    #  Url via vue générique
+    path('logout/', LogoutView.as_view(
+            template_name='blog/home.html'),
+            name='logout'),
+
+    # Url via fonction
+    # path('logout/', authentification.views.logout_user, name='logout'),
+
+    #  Url via vue générique
+    path('changePassword/', PasswordChangeView.as_view(
+            template_name='authentification/password_change_form.html'),
+            name='changePassword'),
+
+    #  Url via vue générique
+    path('changePasswordDone/', PasswordChangeDoneView.as_view(
+            template_name='authentification/password_change_done.html'),
+            name='changePasswordDone'),
+
+    path('signup/', authentification.views.signup_page, name='signup'),
+
     path('home/', blog.views.home, name='home'),
 ]
